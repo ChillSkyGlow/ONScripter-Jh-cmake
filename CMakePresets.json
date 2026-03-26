@@ -1,0 +1,155 @@
+{
+  "version": 3,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 21,
+    "patch": 0
+  },
+  "configurePresets": [
+    {
+      "name": ".base",
+      "hidden": true,
+      "generator": "Ninja",
+      "cacheVariables": {
+        "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
+      }
+    },
+    {
+      "name": ".debug",
+      "hidden": true,
+      "cacheVariables": { "CMAKE_BUILD_TYPE": "Debug" }
+    },
+    {
+      "name": ".release",
+      "hidden": true,
+      "cacheVariables": { "CMAKE_BUILD_TYPE": "Release" }
+    },
+    {
+      "name": ".win-msvc",
+      "hidden": true,
+      "cacheVariables": {
+        "CMAKE_C_COMPILER": "cl",
+        "CMAKE_CXX_COMPILER": "cl"
+      }
+    },
+    {
+      "name": ".win-gcc",
+      "hidden": true,
+      "cacheVariables": {
+        "CMAKE_C_COMPILER": "gcc",
+        "CMAKE_CXX_COMPILER": "g++"
+      }
+    },
+
+    {
+      "name": ".msvc-x64-shared",
+      "hidden": true,
+      "inherits": [".base", ".win-msvc"],
+      "architecture": { "value": "x64", "strategy": "external" },
+      "cacheVariables": {
+        "BUILD_SHARED_LIBS": "ON",
+        "VCPKG_TARGET_TRIPLET": "x64-windows"
+      }
+    },
+    {
+      "name": ".msvc-x64-static",
+      "hidden": true,
+      "inherits": [".base", ".win-msvc"],
+      "architecture": { "value": "x64", "strategy": "external" },
+      "cacheVariables": {
+        "BUILD_SHARED_LIBS": "OFF",
+        "VCPKG_TARGET_TRIPLET": "x64-windows-static",
+        "CMAKE_MSVC_RUNTIME_LIBRARY": "MultiThreaded$<$<CONFIG:Debug>:Debug>"
+      }
+    },
+    {
+      "name": ".msvc-x86-static",
+      "hidden": true,
+      "inherits": [".base", ".win-msvc"],
+      "architecture": { "value": "x86", "strategy": "external" },
+      "cacheVariables": {
+        "BUILD_SHARED_LIBS": "OFF",
+        "VCPKG_TARGET_TRIPLET": "x86-windows-static",
+        "CMAKE_MSVC_RUNTIME_LIBRARY": "MultiThreaded$<$<CONFIG:Debug>:Debug>"
+      }
+    },
+
+    {
+      "name": ".gcc-x64-shared",
+      "hidden": true,
+      "inherits": [".base", ".win-gcc"],
+      "cacheVariables": {
+        "BUILD_SHARED_LIBS": "ON",
+        "VCPKG_TARGET_TRIPLET": "x64-mingw-dynamic"
+      }
+    },
+    {
+      "name": ".gcc-x64-static",
+      "hidden": true,
+      "inherits": [".base", ".win-gcc"],
+      "cacheVariables": {
+        "BUILD_SHARED_LIBS": "OFF",
+        "VCPKG_TARGET_TRIPLET": "x64-mingw-static",
+        "CMAKE_EXE_LINKER_FLAGS": "-static -static-libgcc -static-libstdc++"
+      }
+    },
+
+    {
+      "name": "win-msvc-x64-static-release",
+      "displayName": "MSVC x64 Static (Release)",
+      "description": "主力推荐：生成单文件 x64 可执行程序",
+      "inherits": [".msvc-x64-static", ".release"],
+      "binaryDir": "${sourceDir}/out/build/win-msvc/x64-static/release"
+    },
+    {
+      "name": "win-msvc-x64-static-debug",
+      "displayName": "MSVC x64 Static (Debug)",
+      "inherits": [".msvc-x64-static", ".debug"],
+      "binaryDir": "${sourceDir}/out/build/win-msvc/x64-static/debug"
+    },
+    {
+      "name": "win-gcc-x64-static-release",
+      "displayName": "GCC x64 Static (Release)",
+      "description": "备用方案：处理 MSVC 报错的 Linux 移植项目",
+      "inherits": [".gcc-x64-static", ".release"],
+      "binaryDir": "${sourceDir}/out/build/win-gcc/x64-static/release"
+    },
+    {
+      "name": "win-gcc-x64-static-debug",
+      "displayName": "GCC x64 Static (Debug)",
+      "inherits": [".gcc-x64-static", ".debug"],
+      "binaryDir": "${sourceDir}/out/build/win-gcc/x64-static/debug"
+    },
+    {
+      "name": "win-msvc-x64-shared-release",
+      "displayName": "MSVC x64 Shared (Release)",
+      "description": "动态链接：生成依赖 DLL 的 x64 程序",
+      "inherits": [".msvc-x64-shared", ".release"],
+      "binaryDir": "${sourceDir}/out/build/win-msvc/x64-shared/release"
+    },
+    {
+      "name": "win-gcc-x64-shared-release",
+      "displayName": "GCC x64 Shared (Release)",
+      "description": "动态链接：生成依赖 DLL 的 x64 程序 (MinGW)",
+      "inherits": [".gcc-x64-shared", ".release"],
+      "binaryDir": "${sourceDir}/out/build/win-gcc/x64-shared/release"
+    },
+    {
+      "name": "win-msvc-x86-static-release",
+      "displayName": "MSVC x86 Static (Release)",
+      "description": "特殊用途：针对 32 位老游戏/进程的操作",
+      "inherits": [".msvc-x86-static", ".release"],
+      "binaryDir": "${sourceDir}/out/build/win-msvc/x86-static/release"
+    }
+  ],
+  "buildPresets": [
+    { "name": "win-msvc-x64-static-release", "configurePreset": "win-msvc-x64-static-release" },
+    { "name": "win-msvc-x64-static-debug", "configurePreset": "win-msvc-x64-static-debug" },
+    { "name": "win-gcc-x64-static-release", "configurePreset": "win-gcc-x64-static-release" },
+    { "name": "win-gcc-x64-static-debug", "configurePreset": "win-gcc-x64-static-debug" },
+    { "name": "win-msvc-x64-shared-release", "configurePreset": "win-msvc-x64-shared-release" },
+    { "name": "win-gcc-x64-shared-release", "configurePreset": "win-gcc-x64-shared-release" },
+    { "name": "win-msvc-x86-static-release", "configurePreset": "win-msvc-x86-static-release" }
+  ]
+}
