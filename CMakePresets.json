@@ -28,6 +28,11 @@
     {
       "name": ".win-msvc",
       "hidden": true,
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Windows"
+      },
       "cacheVariables": {
         "CMAKE_C_COMPILER": "cl",
         "CMAKE_CXX_COMPILER": "cl"
@@ -36,12 +41,16 @@
     {
       "name": ".win-gcc",
       "hidden": true,
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Windows"
+      },
       "cacheVariables": {
         "CMAKE_C_COMPILER": "gcc",
         "CMAKE_CXX_COMPILER": "g++"
       }
     },
-
     {
       "name": ".msvc-x64-shared",
       "hidden": true,
@@ -74,7 +83,6 @@
         "CMAKE_MSVC_RUNTIME_LIBRARY": "MultiThreaded$<$<CONFIG:Debug>:Debug>"
       }
     },
-
     {
       "name": ".gcc-x64-shared",
       "hidden": true,
@@ -94,7 +102,6 @@
         "CMAKE_EXE_LINKER_FLAGS": "-static -static-libgcc -static-libstdc++"
       }
     },
-
     {
       "name": "win-msvc-x64-static-release",
       "displayName": "MSVC x64 Static (Release)",
